@@ -1,5 +1,4 @@
 import '../../pokeapi_wrapper.dart';
-import '../core.dart';
 
 class PokemonHeldItemVersionApiModel {
   static var mapper = PokemonHeldItemVersionApiModelMapper();
