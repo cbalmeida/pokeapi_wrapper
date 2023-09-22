@@ -67,10 +67,10 @@ class PokeApiDemoExampleBody extends FutureBuilderWidget<List<PokemonApiResource
 
   @override
   Widget onSuccess(BuildContext context, List<PokemonApiResource> value) => ListView.builder(
-    itemExtent: 100.0, // it is very important to set itemExtent in ListView.builder in order of itemBuilder to be called only for visible items
-    itemCount: value.length,
-    itemBuilder: (context, index) => PokeApiDemoExamplePokemon(pokemonApiResource: value[index]),
-  );
+        itemExtent: 100.0, // it is very important to set itemExtent in ListView.builder in order of itemBuilder to be called only for visible items
+        itemCount: value.length,
+        itemBuilder: (context, index) => PokeApiDemoExamplePokemon(pokemonApiResource: value[index]),
+      );
 }
 
 class PokeApiDemoExamplePokemon extends FutureBuilderWidget<Pokemon> {
@@ -78,7 +78,7 @@ class PokeApiDemoExamplePokemon extends FutureBuilderWidget<Pokemon> {
   const PokeApiDemoExamplePokemon({super.key, required this.pokemonApiResource});
 
   @override
-  Future<Either<Error, Pokemon>> get future => PokeApi.getPokemon(pokemonApiResource);
+  Future<Either<Error, Pokemon>> get future => pokemonApiResource.getPokemon();
 
   @override
   Widget onWaiting(BuildContext context) => const ListTile(leading: CircularProgressIndicator());
@@ -123,13 +123,13 @@ class PokeApiDemoExamplePokemonColor extends FutureBuilderWidget<PokemonColor> {
 
   @override
   Widget onSuccess(BuildContext context, PokemonColor value) => Card(
-    color: value.color?.withAlpha(200),
-    child: ListTile(
-      leading: Image.network(pokemon.sprites.officialArtWork),
-      title: Text(pokemon.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-      subtitle: Wrap(spacing: 4, runSpacing: 4, children: pokemon.types.map((pokemonType) => PokeApiDemoExampleAbilityChip(pokemonType: pokemonType)).toList()),
-    ),
-  );
+        color: value.color?.withAlpha(200),
+        child: ListTile(
+          leading: Image.network(pokemon.sprites.officialArtWork),
+          title: Text(pokemon.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+          subtitle: Wrap(spacing: 4, runSpacing: 4, children: pokemon.types.map((pokemonType) => PokeApiDemoExampleAbilityChip(pokemonType: pokemonType)).toList()),
+        ),
+      );
 }
 
 class PokeApiDemoExampleAbilityChip extends FutureBuilderWidget<Type> {
@@ -148,7 +148,6 @@ class PokeApiDemoExampleAbilityChip extends FutureBuilderWidget<Type> {
   @override
   Widget onSuccess(BuildContext context, Type value) => Chip(label: Text(value.name));
 }
-
 ```
 
 

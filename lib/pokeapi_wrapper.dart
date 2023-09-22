@@ -10,6 +10,7 @@ import 'package:pokeapi_wrapper/src/services.dart';
 import 'package:pokeapi_wrapper/src/services/cache_progress.dart';
 
 export 'package:pokeapi_wrapper/src/core.dart';
+export 'package:pokeapi_wrapper/src/extensions.dart';
 export 'package:pokeapi_wrapper/src/models.dart';
 export 'package:pokeapi_wrapper/src/services.dart';
 export 'package:pokeapi_wrapper/src/widgets.dart';

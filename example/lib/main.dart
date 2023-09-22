@@ -55,7 +55,7 @@ class PokeApiDemoExamplePokemon extends FutureBuilderWidget<Pokemon> {
   const PokeApiDemoExamplePokemon({super.key, required this.pokemonApiResource});
 
   @override
-  Future<Either<Error, Pokemon>> get future => PokeApi.getPokemon(pokemonApiResource);
+  Future<Either<Error, Pokemon>> get future => pokemonApiResource.getPokemon();
 
   @override
   Widget onWaiting(BuildContext context) => const ListTile(leading: CircularProgressIndicator());
