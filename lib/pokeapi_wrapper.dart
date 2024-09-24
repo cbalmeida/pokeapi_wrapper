@@ -3,6 +3,7 @@ library pokeapi_wrapper;
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pokeapi_wrapper/src/caches.dart';
 import 'package:pokeapi_wrapper/src/core.dart';
 import 'package:pokeapi_wrapper/src/models.dart';
 import 'package:pokeapi_wrapper/src/repositories.dart';
@@ -18,11 +19,18 @@ export 'package:pokeapi_wrapper/src/widgets.dart';
 class PokeApi {
   PokeApi._();
 
+  static bool _useHiveAsLocalCache = false;
+  static bool get useHiveAsLocalCache => _useHiveAsLocalCache;
+  static set useHiveAsLocalCache(bool value) {
+    _useHiveAsLocalCache = value;
+    _repository = null;
+  }
+
   //#region Service
 
-  static IRepository _repository = Repository();
+  static IRepository? _repository;
   @visibleForTesting
-  static IRepository get repository => _repository;
+  static IRepository get repository => _repository ??= Repository(useHiveAsLocalCache ? CacheHive() : CacheSharedPrefs());
   @visibleForTesting
   static set repository(IRepository value) {
     _repository = value;

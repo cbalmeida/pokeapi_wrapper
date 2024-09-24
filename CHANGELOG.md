@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Added support for choosing between `Hive` or `SharedPreferences` for caching.
+
 ## 0.0.3
 
 * Added extensions to ApiResources.

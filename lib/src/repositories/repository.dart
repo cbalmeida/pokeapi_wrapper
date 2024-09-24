@@ -1,15 +1,19 @@
 import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../pokeapi_wrapper.dart';
+import '../caches.dart';
 import '../repositories.dart';
 
 class Repository implements IRepository {
+  final ICache cache;
+
+  Repository(this.cache);
+
   @override
   Future<Either<Error, String?>> get(String url) async {
-    String? localStorageValue = await _getFromLocalStorage(url);
+    String? localStorageValue = await cache.getFromLocalStorage(url);
     if (localStorageValue != null) {
       return Right(localStorageValue);
     }
@@ -18,41 +22,30 @@ class Repository implements IRepository {
     if (apiStorageValue.isRight) {
       String? value = apiStorageValue.right;
       if (value != null) {
-        await _putToLocalStorage(url, value);
+        await cache.putToLocalStorage(url, value);
       }
       return Right(value);
     }
     return apiStorageValue;
   }
 
+  /*
   Future<List<String>> get _cacheKeys async {
     return (await _getSharedPreferences()).getKeys().where((element) => element.startsWith('http')).toList();
   }
+   */
 
   @override
   Future<int> clearCache(Function(String key, int progress) onProgress) async {
-    int sizeTotal = 0;
-    List<String> keys = await _cacheKeys;
-    for (int i = 0; i < keys.length; i++) {
-      String key = keys.elementAt(i);
-      sizeTotal += (await _getSharedPreferences()).getString(key)?.length ?? 0;
-      await (await _getSharedPreferences()).remove(key);
-      onProgress(key, (i + 1) * 100 ~/ keys.length);
-    }
-    return sizeTotal;
+    return cache.clearCache(onProgress);
   }
 
   @override
   Future<int> get cacheSize async {
-    int sizeTotal = 0;
-    List<String> keys = await _cacheKeys;
-    for (int i = 0; i < keys.length; i++) {
-      String key = keys.elementAt(i);
-      sizeTotal += (await _getSharedPreferences()).getString(key)?.length ?? 0;
-    }
-    return sizeTotal;
+    return cache.cacheSize;
   }
 
+  /*
   /// local storage
 
   SharedPreferences? _sharedPreferences;
@@ -70,6 +63,8 @@ class Repository implements IRepository {
     await (await _getSharedPreferences()).setString(url, value);
     return true;
   }
+
+   */
 
   /// api
 
@@ -92,13 +87,18 @@ class Repository implements IRepository {
   @override
   Future<Either<Error, Uint8List>> getContent(String url) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? value = prefs.getString(url);
+      //SharedPreferences prefs = await SharedPreferences.getInstance();
+      //final String? value = prefs.getString(url);
+      final String? value = await cache.getFromLocalStorage(url);
+
       if (value != null) return Right(Uint8List.fromList(value.codeUnits));
       var response = await http.get(Uri.parse(url));
       Uint8List bytes = response.bodyBytes;
       final String downloadContent = String.fromCharCodes(bytes);
-      await prefs.setString(url, downloadContent);
+
+      //await prefs.setString(url, downloadContent);
+      await cache.putToLocalStorage(url, downloadContent);
+
       return Right(bytes);
     } catch (e) {
       return Left(StateError(e.toString()));

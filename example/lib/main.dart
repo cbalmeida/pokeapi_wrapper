@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokeapi_wrapper/pokeapi_wrapper.dart';
 
 void main() {
+  PokeApi.useHiveAsLocalCache = true; // otherwise it will use shared_preferences as local cache
   runApp(const MyApp());
 }
 
